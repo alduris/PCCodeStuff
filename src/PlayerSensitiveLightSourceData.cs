@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using IL.MoreSlugcats;
 using RWCustom;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace PCCodeStuff
         public PlacedObject.LightSourceData.ColorType colorType;
         public float minStrength;
         public float maxStrength;
+        public float fadeSpeed;
         public bool flat;
 
         public float Rad
@@ -48,6 +50,7 @@ namespace PCCodeStuff
             colorType = PlacedObject.LightSourceData.ColorType.Environment;
             minStrength = 0f;
             maxStrength = 1f;
+            fadeSpeed = 0.5f;
             flat = false;
         }
 
@@ -57,6 +60,7 @@ namespace PCCodeStuff
             int i = 0;
             minStrength = float.Parse(array[i++], NumberStyles.Any, CultureInfo.InvariantCulture);
             maxStrength = float.Parse(array[i++], NumberStyles.Any, CultureInfo.InvariantCulture);
+            fadeSpeed = float.Parse(array[i++], NumberStyles.Any, CultureInfo.InvariantCulture);
             colorType = new PlacedObject.LightSourceData.ColorType(array[i++], false);
             radHandlePos.x = float.Parse(array[i++], NumberStyles.Any, CultureInfo.InvariantCulture);
             radHandlePos.y = float.Parse(array[i++], NumberStyles.Any, CultureInfo.InvariantCulture);
@@ -70,7 +74,7 @@ namespace PCCodeStuff
 
         protected string BaseSaveString()
         {
-            return $"{minStrength}~{maxStrength}~{colorType}~{radHandlePos.x}~{radHandlePos.y}~{detRadHandlePos.x}~{detRadHandlePos.y}~{panelPos.x}~{panelPos.y}~{flat}";
+            return $"{minStrength}~{maxStrength}~{fadeSpeed}~{colorType}~{radHandlePos.x}~{radHandlePos.y}~{detRadHandlePos.x}~{detRadHandlePos.y}~{panelPos.x}~{panelPos.y}~{flat}";
         }
 
         public override string ToString()

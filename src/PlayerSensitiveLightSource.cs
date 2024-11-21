@@ -23,6 +23,7 @@ namespace PCCodeStuff
 
         private bool _flat;
         private bool _shaderDirty = false;
+        internal bool colorDirty = false;
         public virtual bool Flat
         {
             get => _flat;
@@ -198,6 +199,12 @@ namespace PCCodeStuff
             {
                 sLeaser.sprites[0].shader = rCam.room.game.rainWorld.Shaders[Flat ? "FlatLight" : "LightSource"];
                 _shaderDirty = false;
+            }
+
+            if (colorDirty)
+            {
+                ApplyPalette(sLeaser, rCam, rCam.currentPalette);
+                colorDirty = false;
             }
 
             if (slatedForDeletetion)

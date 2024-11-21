@@ -121,12 +121,96 @@ namespace PCCodeStuff
         {
             public PSLSControlPanel(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos) : base(owner, IDstring, parentNode, pos, new Vector2(250f, 90f), "Player Sensitive Light Source")
             {
-                // todo: add the controls here
+                subNodes.Add(new MinStrengthSlider(owner, this, new Vector2(5f, 65f)));
+                subNodes.Add(new MaxStrengthSlider(owner, this, new Vector2(5f, 45f)));
+                subNodes.Add(new FadeSpeedSlider(owner, this, new Vector2(5f, 25f)));
+                subNodes.Add(new Button(owner, "Color_Button", this, new Vector2(5f, 5f), 100f, (parentNode as PlayerSensitiveLightSourceRepresentation).data.colorType.ToString()));
+                subNodes.Add(new Button(owner, "Flat_Button", this, new Vector2(125f, 5f), 100f, (parentNode as PlayerSensitiveLightSourceRepresentation).data.flat ? "Flat: ON" : "Flat: OFF"));
             }
 
             public void Signal(DevUISignalType type, DevUINode sender, string message)
             {
-                throw new NotImplementedException();
+                var data = (parentNode as PlayerSensitiveLightSourceRepresentation).data;
+                switch (sender.IDstring)
+                {
+                    case "Color_Button":
+                        {
+                            if ((int)data.colorType >= 3)
+                            {
+                                data.colorType = new PlacedObject.LightSourceData.ColorType(ExtEnum<PlacedObject.LightSourceData.ColorType>.values.GetEntry(0), false);
+                            }
+                            else
+                            {
+                                data.colorType = new PlacedObject.LightSourceData.ColorType(ExtEnum<PlacedObject.LightSourceData.ColorType>.values.GetEntry(data.colorType.Index + 1), false);
+                            }
+                            (sender as Button).Text = data.colorType.ToString();
+                            (parentNode as PlayerSensitiveLightSourceRepresentation).light.colorDirty = true;
+                            break;
+                        }
+                    case "Flat_Button":
+                        {
+                            data.flat = !data.flat;
+                            (sender as Button).Text = (data.flat ? "Flat: ON" : "FLAT: OFF");
+                            break;
+                        }
+                }
+            }
+
+            public class MinStrengthSlider(DevUI owner, DevUINode parentNode, Vector2 pos) : Slider(owner, "Min_Strength_Slider", parentNode, pos, "Min Strength: ", false, 110f)
+            {
+                public override void Refresh()
+                {
+                    base.Refresh();
+                    float num = (parentNode.parentNode as PlayerSensitiveLightSourceRepresentation).data.minStrength;
+                    NumberText = ((int)(num * 100f)).ToString() + "%";
+                    RefreshNubPos(num);
+                }
+
+                public override void NubDragged(float nubPos)
+                {
+                    var data = (parentNode.parentNode as PlayerSensitiveLightSourceRepresentation).data;
+                    data.minStrength = Mathf.Min(nubPos, data.maxStrength);
+                    parentNode.parentNode.Refresh();
+                    Refresh();
+                }
+            }
+
+            public class MaxStrengthSlider(DevUI owner, DevUINode parentNode, Vector2 pos) : Slider(owner, "Max_Strength_Slider", parentNode, pos, "Max Strength: ", false, 110f)
+            {
+                public override void Refresh()
+                {
+                    base.Refresh();
+                    float num = (parentNode.parentNode as PlayerSensitiveLightSourceRepresentation).data.maxStrength;
+                    NumberText = ((int)(num * 100f)).ToString() + "%";
+                    RefreshNubPos(num);
+                }
+
+                public override void NubDragged(float nubPos)
+                {
+                    var data = (parentNode.parentNode as PlayerSensitiveLightSourceRepresentation).data;
+                    data.maxStrength = Mathf.Max(nubPos, data.minStrength);
+                    parentNode.parentNode.Refresh();
+                    Refresh();
+                }
+            }
+
+            public class FadeSpeedSlider(DevUI owner, DevUINode parentNode, Vector2 pos) : Slider(owner, "Fade_Speed_Slider", parentNode, pos, "Fade Speed: ", false, 110f)
+            {
+                public override void Refresh()
+                {
+                    base.Refresh();
+                    float num = (parentNode.parentNode as PlayerSensitiveLightSourceRepresentation).data.fadeSpeed;
+                    NumberText = ((int)(num * 100f)).ToString() + "%";
+                    RefreshNubPos(num);
+                }
+
+                public override void NubDragged(float nubPos)
+                {
+                    var data = (parentNode.parentNode as PlayerSensitiveLightSourceRepresentation).data;
+                    data.fadeSpeed = nubPos;
+                    parentNode.parentNode.Refresh();
+                    Refresh();
+                }
             }
         }
     }
