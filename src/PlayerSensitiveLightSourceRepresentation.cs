@@ -26,8 +26,8 @@ namespace PCCodeStuff
             data = pObj.data as PlayerSensitiveLightSourceData;
 
             // Initialize UI stuff
-            radHandle = new Handle(owner, "Rad_Handle", this, new Vector2(0f, 100f));
-            detectRadHandle = new Handle(owner, "DetRad_Handle", this, new Vector2(0f, 160f));
+            radHandle = new Handle(owner, "Rad_Handle", this, data.radHandlePos);
+            detectRadHandle = new Handle(owner, "DetRad_Handle", this, data.detectRadHandlePos);
             subNodes.Add(radHandle);
             subNodes.Add(detectRadHandle);
 
@@ -57,6 +57,12 @@ namespace PCCodeStuff
             fSprites.Add(detectRadLine);
             fSprites.Add(panelLine);
 
+            owner.placedObjectsContainer.AddChild(radCircle);
+            owner.placedObjectsContainer.AddChild(radLine);
+            owner.placedObjectsContainer.AddChild(detectRadCircle);
+            owner.placedObjectsContainer.AddChild(detectRadLine);
+            owner.placedObjectsContainer.AddChild(panelLine);
+
             panel = new PSLSControlPanel(owner, "PSLS_Panel", this, data.panelPos);
             subNodes.Add(panel);
 
@@ -72,7 +78,7 @@ namespace PCCodeStuff
 
             if (light == null)
             {
-                light = new PlayerSensitiveLightSource(pos, radHandle.pos.magnitude, detectRadHandle.pos.magnitude, 0f, 1f, -1);
+                light = new PlayerSensitiveLightSource(pos, radHandle.pos.magnitude, detectRadHandle.pos.magnitude, 0f, 1f, -2) { po = pObj };
                 owner.room.AddObject(light);
             }
         }
@@ -104,14 +110,14 @@ namespace PCCodeStuff
 
             // Update data
             data.radHandlePos = radHandle.pos;
-            data.detRadHandlePos = detectRadHandle.pos;
+            data.detectRadHandlePos = detectRadHandle.pos;
             data.panelPos = panel.pos;
 
             // Update light
             light.pos = pObj.pos;
             light.rad = data.Rad;
-            light.detectRad = data.DetRad;
-            light.effectColor = data.colorType.index - 1;
+            light.detectRad = data.DetectRad;
+            light.effectColor = data.colorType.index - 2;
             light.minStrength = data.minStrength;
             light.maxStrength = data.maxStrength;
             light.Flat = data.flat;
@@ -144,6 +150,7 @@ namespace PCCodeStuff
                                 data.colorType = new PlacedObject.LightSourceData.ColorType(ExtEnum<PlacedObject.LightSourceData.ColorType>.values.GetEntry(data.colorType.Index + 1), false);
                             }
                             (sender as Button).Text = data.colorType.ToString();
+                            (parentNode as PlayerSensitiveLightSourceRepresentation).light.Color = Color.white;
                             (parentNode as PlayerSensitiveLightSourceRepresentation).light.colorDirty = true;
                             break;
                         }

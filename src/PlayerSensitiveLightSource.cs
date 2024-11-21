@@ -23,7 +23,7 @@ namespace PCCodeStuff
 
         private bool _flat;
         private bool _shaderDirty = false;
-        internal bool colorDirty = false;
+        internal bool colorDirty = true;
         public virtual bool Flat
         {
             get => _flat;
@@ -114,14 +114,21 @@ namespace PCCodeStuff
 
                 waterSurfaceLevel = room.FloatWaterLevel(pos.x);
 
-                if (effectColor < 0 && room.game.cameras[0].room == room)
+                if (effectColor < -1 && room.game.cameras[0].room == room)
                 {
                     Color = room.game.cameras[0].PixelColorAtCoordinate(pos);
                 }
             }
 
-            bool withinThreshold = dist < rad;
-            alpha = Custom.LerpAndTick(alpha, withinThreshold ? maxStrength : minStrength, fadeSpeed, fadeSpeed / 5f);
+            if (dist == float.MaxValue)
+            {
+                alpha = 0f;
+            }
+            else
+            {
+                bool withinThreshold = dist < detectRad;
+                alpha = fadeSpeed == 0f ? (withinThreshold ? 1f : 0f) : Mathf.Max(0f, (detectRad - dist) / fadeSpeed / detectRad);
+            }
         }
 
         public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
@@ -164,7 +171,7 @@ namespace PCCodeStuff
         public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
             const bool AFFECTED_BY_DARKNESS = false;
-            float alphaFac = Mathf.Lerp(lastAlpha, lastAlpha, timeStacker);
+            float alphaFac = Mathf.Lerp(minStrength, maxStrength, Mathf.Lerp(lastAlpha, lastAlpha, timeStacker));
             float darkness = AFFECTED_BY_DARKNESS ? rCam.room.Darkness(pos) : 1f;
 
             for (int i = 0; i < sLeaser.sprites.Length; i++)
