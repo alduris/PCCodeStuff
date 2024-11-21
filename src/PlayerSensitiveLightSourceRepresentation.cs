@@ -78,7 +78,7 @@ namespace PCCodeStuff
 
             if (light == null)
             {
-                light = new PlayerSensitiveLightSource(pos, radHandle.pos.magnitude, detectRadHandle.pos.magnitude, 0f, 1f, -2) { po = pObj };
+                light = new PlayerSensitiveLightSource(pos, radHandle.pos.magnitude, detectRadHandle.pos.magnitude, data.minStrength, data.maxStrength, data.fadeSpeed, data.colorType.index - 2) { po = pObj };
                 owner.room.AddObject(light);
             }
         }
@@ -120,6 +120,7 @@ namespace PCCodeStuff
             light.effectColor = data.colorType.index - 2;
             light.minStrength = data.minStrength;
             light.maxStrength = data.maxStrength;
+            light.fadeSpeed = data.fadeSpeed;
             light.Flat = data.flat;
         }
 

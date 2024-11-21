@@ -37,7 +37,7 @@ namespace PCCodeStuff
         private Color _color;
         protected float colorAlpha;
 
-        public PlayerSensitiveLightSource(Vector2 initPos, float initRad, float initDetRad, float minStrength, float maxStrength, int effectColor)
+        public PlayerSensitiveLightSource(Vector2 initPos, float initRad, float initDetRad, float minStrength, float maxStrength, float fadeSpeed, int effectColor)
         {
             pos = initPos;
             rad = initRad;
@@ -45,6 +45,7 @@ namespace PCCodeStuff
             this.effectColor = effectColor;
             this.minStrength = minStrength;
             this.maxStrength = maxStrength;
+            this.fadeSpeed = fadeSpeed;
             alpha = minStrength;
             lastAlpha = alpha;
         }

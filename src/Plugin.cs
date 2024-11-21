@@ -49,7 +49,7 @@ sealed class Plugin : BaseUnityPlugin
             if (obj.type == PCPlayerSensitiveLightSource)
             {
                 var data = obj.data as PlayerSensitiveLightSourceData;
-                self.AddObject(new PlayerSensitiveLightSource(obj.pos, data.Rad, data.DetectRad, data.minStrength, data.maxStrength, data.colorType.index - 2) { colorDirty = true, po = obj });
+                self.AddObject(new PlayerSensitiveLightSource(obj.pos, data.Rad, data.DetectRad, data.minStrength, data.maxStrength, data.fadeSpeed, data.colorType.index - 2) { colorDirty = true, po = obj });
             }
         }
     }
