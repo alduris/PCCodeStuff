@@ -3,20 +3,22 @@ using UnityEngine;
 
 namespace PCCodeStuff
 {
-    public class PlayerSensitiveLightSource(Vector2 initPos, float initRad, float initDetRad, int effectColor) : UpdatableAndDeletable, IDrawable
+    public class PlayerSensitiveLightSource : UpdatableAndDeletable, IDrawable
     {
-        public Vector2 pos = initPos;
-        public float rad = initRad;
-        public float detectRad = initDetRad;
+        public Vector2 pos;
+        public float rad;
+        public float detectRad;
         public float fadeSpeed = 0.5f;
+        public float minStrength;
+        public float maxStrength;
 
         internal PlacedObject po = null;
 
-        internal int effectColor = effectColor;
+        internal int effectColor;
         protected float dist = float.MaxValue;
         protected float lastDist = float.MaxValue;
-        protected float alpha = 0f;
-        protected float lastAlpha = 0f;
+        protected float alpha;
+        protected float lastAlpha;
         protected float waterSurfaceLevel = -1f;
 
         private bool _flat;
@@ -33,6 +35,19 @@ namespace PCCodeStuff
 
         private Color _color;
         protected float colorAlpha;
+
+        public PlayerSensitiveLightSource(Vector2 initPos, float initRad, float initDetRad, float minStrength, float maxStrength, int effectColor)
+        {
+            pos = initPos;
+            rad = initRad;
+            detectRad = initDetRad;
+            this.effectColor = effectColor;
+            this.minStrength = minStrength;
+            this.maxStrength = maxStrength;
+            alpha = minStrength;
+            lastAlpha = alpha;
+        }
+
         public virtual Color Color
         {
             get
@@ -105,7 +120,7 @@ namespace PCCodeStuff
             }
 
             bool withinThreshold = dist < rad;
-            alpha = Custom.LerpAndTick(alpha, withinThreshold ? 1f : 0f, fadeSpeed, fadeSpeed / 5f);
+            alpha = Custom.LerpAndTick(alpha, withinThreshold ? maxStrength : minStrength, fadeSpeed, fadeSpeed / 5f);
         }
 
         public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
@@ -183,6 +198,11 @@ namespace PCCodeStuff
             {
                 sLeaser.sprites[0].shader = rCam.room.game.rainWorld.Shaders[Flat ? "FlatLight" : "LightSource"];
                 _shaderDirty = false;
+            }
+
+            if (slatedForDeletetion)
+            {
+                sLeaser.CleanSpritesAndRemove();
             }
         }
     }
