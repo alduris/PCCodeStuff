@@ -72,7 +72,7 @@ sealed class Plugin : BaseUnityPlugin
         {
             pObj = new PlacedObject(tp, null)
             {
-                pos = self.owner.room.game.cameras[0].pos + Vector2.Lerp(self.owner.mousePos, new Vector2(-683f, 384f), 0.25f) + Custom.DegToVec(global::UnityEngine.Random.value * 360f) * 0.2f
+                pos = self.owner.room.game.cameras[0].pos + Vector2.Lerp(self.owner.mousePos, new Vector2(-683f, 384f), 0.25f) + Custom.DegToVec(Random.value * 360f) * 0.2f
             };
             self.RoomSettings.placedObjects.Add(pObj);
         }
