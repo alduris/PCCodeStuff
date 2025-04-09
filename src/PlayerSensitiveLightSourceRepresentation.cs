@@ -41,7 +41,8 @@ namespace PCCodeStuff
             };
             detectRadCircle = new FSprite("Futile_White", true)
             {
-                shader = owner.room.game.rainWorld.Shaders["VectorCircle"]
+                shader = owner.room.game.rainWorld.Shaders["VectorCircle"],
+                color = new Color(1f, 0f, 1f)
             };
             detectRadLine = new FSprite("pixel", true)
             {

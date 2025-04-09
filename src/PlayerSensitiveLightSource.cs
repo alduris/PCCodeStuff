@@ -113,7 +113,7 @@ namespace PCCodeStuff
                     }
                 }
 
-                waterSurfaceLevel = room.FloatWaterLevel(pos.x);
+                waterSurfaceLevel = room.FloatWaterLevel(pos);
 
                 if (effectColor < -1 && room.game.cameras[0].room == room)
                 {
